@@ -88,20 +88,31 @@ body {
   flex-wrap: wrap;
 }
 
-.btn-back {
-  background-color: #1f6f3f;
-  color: white;
+.btn {
+  background-color: white;
+  color: #247339;
   border: none;
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  border-radius: 30px;
+  padding: 14px 40px;
+  font-size: 28px;
+  border-radius: 40px;
   cursor: pointer;
   transition: background-color 0.3s;
-}
-.btn-back:hover {
-  background-color: #145a30;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin-top: 20px;
 }
 
+.btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Centrēšanas konteiners, ja nepieciešams */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
 
 /* Progresijas josla */
 .progress-wrapper {
