@@ -52,9 +52,7 @@ body {
 .trash-item {
   position: absolute;
   width: 150px;
-  left: 0%;
-  top: 0%;
-  transform: translate(-50%, -50%);
+ 
   cursor: grab;
   transition: all 0.2s ease-out;
   z-index: 1000;
