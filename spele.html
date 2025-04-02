@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
+  <title>Spēle – Zināšanu Karuselis</title>
+  <link rel="stylesheet" href="spele.css" />
+</head>
+<body>
+  <div class="game-container">
+
+    <!-- Miskastes rinda -->
+    <div class="bins">
+      <img src="m1.png" alt="Miskaste 1" class="bin" />
+      <img src="m2.png" alt="Miskaste 2" class="bin" />
+      <img src="m3.png" alt="Miskaste 3" class="bin" />
+      <img src="m4.png" alt="Miskaste 4" class="bin" />
+      <img src="m5.png" alt="Miskaste 5" class="bin" />
+      <img src="m6.png" alt="Miskaste 6" class="bin" />
+    </div>
+<br>
+
+
+    <!-- Atkritumu zona ar fiksētu konteineru -->
+    <div class="trash-zone" id="trashZone">
+      <div class="trash-holder" id="trashHolder"></div>
+    </div>
+<br>
+<br>
+
+
+    <!-- Progresijas josla -->
+    <div class="progress-wrapper">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-icon" id="progressIcon">
+          <img src="burkans.png" alt="Burkāns" />
+        </div>
+      </div>
+      <div class="progress-score">
+        <span id="score">0</span> punkti
+      </div>
+    </div>
+
+    <!-- Pogas -->
+    <div class="button-wrapper">
+      <button class="btn btn-back" onclick="window.location.href='index.html'">Uz sākumu</button>
+      <button class="btn btn-back" onclick="window.location.href='noteikumi.html'">Noteikumi</button>
+    </div>
+
+  </div>
+
+  <!-- JavaScript loģika -->
+  <script src="script.js"></script>
+</body>
+</html>

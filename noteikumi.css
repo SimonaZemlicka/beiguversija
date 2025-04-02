@@ -1,0 +1,65 @@
+body {
+  background: url('noteikumi.png') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* ← nolaiž saturu uz leju */
+  align-items: center;
+  height: 100vh;
+}
+
+/* Ietilpina pogas ar apakšējo rezervi */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 5vh;   /* ← NEPIESPIEST pie malas! */
+  padding: 10px 20px;   /* ← attālums no malām */
+}
+
+/* Poga stils */
+.btn {
+  background-color: white;
+  color: #247339;
+  border: none;
+  padding: 14px 40px;
+  font-size: 28px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn:hover {
+  background-color: #e0e0e0;
+}
+
+@media (max-width: 1024px) {
+  .btn {
+    font-size: 1.4rem;
+    padding: 18px 36px;
+  }
+
+  .button-wrapper {
+    gap: 24px;
+    margin-bottom: 6vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn {
+    font-size: 1.2rem;
+    padding: 16px 30px;
+  }
+
+  .button-wrapper {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 8vh;
+  }
+}
