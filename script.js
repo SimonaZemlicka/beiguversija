@@ -1,3 +1,4 @@
+// Spēles uzsākšanas funkcijas
 function playGame() {
   window.location.href = "spele.html";
 }
@@ -22,6 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let offsetY = 0;
   let startX = 0;
   let startY = 0;
+  let targetX = 0;
+  let targetY = 0;
+  let currentX = 0;
+  let currentY = 0;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -68,13 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       trashHolder.appendChild(img);
 
-      // Pēc pievienošanas ielasa precīzu pozīciju
       const holderRect = trashHolder.getBoundingClientRect();
       const imgRect = img.getBoundingClientRect();
 
       startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
       startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2 - 30;
 
+      currentX = targetX = startX;
+      currentY = targetY = startY;
 
       img.style.left = `${startX}px`;
       img.style.top = `${startY}px`;
@@ -115,19 +121,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!draggedItem) return;
     e.preventDefault();
 
-    let clientX, clientY;
     if (e.type.startsWith("touch")) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
+      targetX = e.touches[0].clientX - offsetX;
+      targetY = e.touches[0].clientY - offsetY;
     } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
+      targetX = e.clientX - offsetX;
+      targetY = e.clientY - offsetY;
     }
 
-    requestAnimationFrame(() => {
-      draggedItem.style.left = `${clientX - offsetX}px`;
-      draggedItem.style.top = `${clientY - offsetY}px`;
-    });
+    requestAnimationFrame(smoothDrag);
+  }
+
+  function smoothDrag() {
+    if (!draggedItem) return;
+
+    currentX += (targetX - currentX) * 0.3;
+    currentY += (targetY - currentY) * 0.3;
+
+    draggedItem.style.left = `${currentX}px`;
+    draggedItem.style.top = `${currentY}px`;
+
+    if (Math.abs(currentX - targetX) > 0.5 || Math.abs(currentY - targetY) > 0.5) {
+      requestAnimationFrame(smoothDrag);
+    }
   }
 
   function endDrag() {
@@ -166,14 +182,14 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež uz sākuma vietu
       draggedItem.style.transition = "all 0.3s ease";
       draggedItem.style.left = `${startX}px`;
       draggedItem.style.top = `${startY}px`;
+      currentX = targetX = startX;
+      currentY = targetY = startY;
       draggedItem = null;
     }
 
-    // Notīra visus eventus
     document.removeEventListener("mousemove", dragMove);
     document.removeEventListener("mouseup", endDrag);
     document.removeEventListener("touchmove", dragMove);
