@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" },
+    { src: "bat3.png", type: "m6" }
   ];
 
   const totalItems = trashItems.length;
@@ -64,17 +64,23 @@ document.addEventListener("DOMContentLoaded", () => {
       img.src = trash.src;
       img.className = "trash-item";
       img.setAttribute("data-type", trash.type);
-
-      // Pozicionē centrā relatīvi pret trash-holder
-      img.style.left = "50%";
-      img.style.top = "50%";
-      img.style.transform = "translate(-50%, -50%)";
+      img.style.position = "absolute";
+      img.style.visibility = "hidden";
 
       trashHolder.appendChild(img);
 
-      // Saglabā sākuma pozīciju (centrēta)
-      startX = "50%";
-      startY = "50%";
+      img.onload = () => {
+        const holderRect = trashHolder.getBoundingClientRect();
+        const imgRect = img.getBoundingClientRect();
+
+        startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
+        startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2;
+
+        img.style.left = `${startX}px`;
+        img.style.top = `${startY}px`;
+        img.style.transform = "none";
+        img.style.visibility = "visible";
+      };
 
       img.addEventListener("mousedown", startDrag);
       img.addEventListener("touchstart", startDrag, { passive: false });
@@ -90,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
     draggedItem.style.zIndex = "1000";
-    draggedItem.style.transition = "none";
+    draggedItem.style.transition = "none"; // no transition while dragging
 
     const rect = draggedItem.getBoundingClientRect();
 
@@ -121,11 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    // Padara kustību ātru un precīzu
-    draggedItem.style.transition = "none";
-    draggedItem.style.left = `${clientX - offsetX}px`;
-    draggedItem.style.top = `${clientY - offsetY}px`;
-    draggedItem.style.transform = "translate(0, 0)";
+    draggedItem.style.transition = "none"; // ensure instant movement
+    requestAnimationFrame(() => {
+      draggedItem.style.left = `${clientX - offsetX}px`;
+      draggedItem.style.top = `${clientY - offsetY}px`;
+    });
   }
 
   function endDrag() {
@@ -164,15 +170,13 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Ātri atgriež atpakaļ uz centrālo vietu
-      draggedItem.style.transition = "all 0.25s ease";
-      draggedItem.style.left = "50%";
-      draggedItem.style.top = "50%";
-      draggedItem.style.transform = "translate(-50%, -50%)";
+      // Atgriež uz sākuma vietu ar ātru efektu
+      draggedItem.style.transition = "all 0.2s ease";
+      draggedItem.style.left = `${startX}px`;
+      draggedItem.style.top = `${startY}px`;
       draggedItem = null;
     }
 
-    // Noņem eventus
     document.removeEventListener("mousemove", dragMove);
     document.removeEventListener("mouseup", endDrag);
     document.removeEventListener("touchmove", dragMove);
