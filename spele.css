@@ -33,33 +33,31 @@ body {
 /* Atkritumu zona */
 .trash-zone {
   width: 90%;
-  min-height: 190px;
+  height: 200px;
   background-color: white;
-  border: 3px dashed white;
-  border-radius: 20px;
+  position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
-  position: relative; /* lai .trash-item būtu relatīvi pret šo */
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .trash-holder {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative; /* ļoti svarīgi! */
 }
 
 /* Atkritumu attēli */
 .trash-item {
-  width: 150px;
-  cursor: grab;
   position: absolute;
+  width: 150px;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  transition: all 0.25s ease; /* gluda pārvietošanās */
-  z-index: 10;
+  cursor: grab;
+  transition: all 0.2s ease-out;
+  z-index: 1000;
 }
 
 /* Progresijas josla */
@@ -106,7 +104,7 @@ body {
   color: #1f6f3f;
 }
 
-/* Pogu stils */
+/* Pogas */
 .button-wrapper {
   display: flex;
   justify-content: center;
@@ -131,20 +129,7 @@ body {
   background-color: #1a5a2d;
 }
 
-/* Shake (ja vajag kādā brīdī) */
-@keyframes shakeAnim {
-  0% { transform: translate(-50%, -50%) translateX(0); }
-  25% { transform: translate(-50%, -50%) translateX(-10px); }
-  50% { transform: translate(-50%, -50%) translateX(10px); }
-  75% { transform: translate(-50%, -50%) translateX(-10px); }
-  100% { transform: translate(-50%, -50%) translateX(0); }
-}
-
-.shake {
-  animation: shakeAnim 0.4s ease;
-}
-
-/* Responsīvais dizains */
+/* Responsive */
 @media (max-width: 1024px) {
   .bins {
     gap: 20px;
