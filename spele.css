@@ -41,25 +41,25 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  position: relative; /* lai .trash-item būtu relatīvi pret šo */
 }
 
 .trash-holder {
-  width: 100%;
   height: 100%;
-  position: relative; /* ļoti svarīgi! */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Atkritumu attēli */
 .trash-item {
   width: 150px;
   cursor: grab;
+  margin-top: 1px;
+  
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.25s ease; /* gluda pārvietošanās */
-  z-index: 10;
+ 
 }
 
 /* Progresijas josla */
@@ -106,7 +106,7 @@ body {
   color: #1f6f3f;
 }
 
-/* Pogu stils */
+/* ✅ Pogu stils kā noteikumi.html */
 .button-wrapper {
   display: flex;
   justify-content: center;
@@ -116,8 +116,8 @@ body {
 }
 
 .btn {
-  background-color: #247339;
-  color: white;
+  background-color: #247339;     /* zaļš fons */
+  color: white;                  /* balts teksts */
   border: none;
   padding: 14px 40px;
   font-size: 28px;
@@ -128,34 +128,35 @@ body {
 }
 
 .btn:hover {
-  background-color: #1a5a2d;
+  background-color: #1a5a2d;     /* tumšāks zaļš uz hover */
 }
 
-/* Shake (ja vajag kādā brīdī) */
+
+/* Shake (ja vēl vajag) */
 @keyframes shakeAnim {
-  0% { transform: translate(-50%, -50%) translateX(0); }
-  25% { transform: translate(-50%, -50%) translateX(-10px); }
-  50% { transform: translate(-50%, -50%) translateX(10px); }
-  75% { transform: translate(-50%, -50%) translateX(-10px); }
-  100% { transform: translate(-50%, -50%) translateX(0); }
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
 }
 
 .shake {
   animation: shakeAnim 0.4s ease;
 }
 
-/* Responsīvais dizains */
+/* Responsive */
 @media (max-width: 1024px) {
   .bins {
     gap: 20px;
   }
 
   .bin {
-    width: 140px;
+    width: 160px;
   }
 
   .trash-item {
-    width: 130px;
+    width: 140px;
   }
 
   .btn {
