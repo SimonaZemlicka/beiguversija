@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const imgRect = img.getBoundingClientRect();
 
       startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
-      startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2 - 50;
+      startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2 - 30;
 
 
       img.style.left = `${startX}px`;
