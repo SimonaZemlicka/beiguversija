@@ -55,11 +55,11 @@ body {
   width: 150px;
   cursor: grab;
   margin-top: 1px;
-  
+  transition: transform 0.4s ease, left 0.6s ease, top 0.6s ease;
   position: absolute;
   left: 50%;
   top: 50%;
- 
+  transform: translate(-50%, -50%);
 }
 
 /* Progresijas josla */
@@ -116,8 +116,8 @@ body {
 }
 
 .btn {
-  background-color: #247339;     /* zaļš fons */
-  color: white;                  /* balts teksts */
+  background-color: white;
+  color: #247339;
   border: none;
   padding: 14px 40px;
   font-size: 28px;
@@ -128,9 +128,8 @@ body {
 }
 
 .btn:hover {
-  background-color: #1a5a2d;     /* tumšāks zaļš uz hover */
+  background-color: #e0e0e0;
 }
-
 
 /* Shake (ja vēl vajag) */
 @keyframes shakeAnim {
