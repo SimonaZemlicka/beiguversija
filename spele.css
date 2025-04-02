@@ -52,10 +52,12 @@ body {
 .trash-item {
   position: absolute;
   width: 150px;
- 
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   cursor: grab;
   transition: all 0.2s ease-out;
-  z-index: 1000;
+  z-index: 0;
 }
 
 /* Progresijas josla */
