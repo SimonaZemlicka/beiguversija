@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" }
+    { src: "bat3.png", type: "m6" },
   ];
 
   const totalItems = trashItems.length;
@@ -65,18 +65,26 @@ document.addEventListener("DOMContentLoaded", () => {
       img.className = "trash-item";
       img.setAttribute("data-type", trash.type);
       img.style.position = "absolute";
+      img.style.visibility = "hidden"; // slēpj uz brīdi
 
       trashHolder.appendChild(img);
 
-      const holderRect = trashHolder.getBoundingClientRect();
-      const imgRect = img.getBoundingClientRect();
+      // Kad attēls ielādēts, tad ieliek centrā
+      img.onload = () => {
+        const holderWidth = trashHolder.offsetWidth;
+        const holderHeight = trashHolder.offsetHeight;
 
-      startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
-      startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2 - 30;
+        const imgWidth = img.offsetWidth;
+        const imgHeight = img.offsetHeight;
 
-      img.style.left = `${startX}px`;
-      img.style.top = `${startY}px`;
-      img.style.transform = "none";
+        startX = holderWidth / 2 - imgWidth / 2;
+        startY = holderHeight / 2 - imgHeight / 2;
+
+        img.style.left = `${startX}px`;
+        img.style.top = `${startY}px`;
+        img.style.transform = "none";
+        img.style.visibility = "visible";
+      };
 
       img.addEventListener("mousedown", startDrag);
       img.addEventListener("touchstart", startDrag, { passive: false });
@@ -122,9 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    // Tieša pozīcija bez lēnas kustības
-    draggedItem.style.left = `${clientX - offsetX}px`;
-    draggedItem.style.top = `${clientY - offsetY}px`;
+    requestAnimationFrame(() => {
+      draggedItem.style.left = `${clientX - offsetX}px`;
+      draggedItem.style.top = `${clientY - offsetY}px`;
+    });
   }
 
   function endDrag() {
