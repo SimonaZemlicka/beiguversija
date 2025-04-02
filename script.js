@@ -8,7 +8,6 @@ function showRules() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const trashHolder = document.getElementById("trashHolder");
-  const trashZone = document.getElementById("trashZone");
   const bins = document.querySelectorAll(".bin");
   const scoreDisplay = document.getElementById("score");
   const progressFill = document.getElementById("progressFill");
@@ -65,25 +64,17 @@ document.addEventListener("DOMContentLoaded", () => {
       img.src = trash.src;
       img.className = "trash-item";
       img.setAttribute("data-type", trash.type);
-      img.style.position = "absolute";
-      img.style.visibility = "hidden";
+
+      // Pozicionē centrā relatīvi pret trash-holder
+      img.style.left = "50%";
+      img.style.top = "50%";
+      img.style.transform = "translate(-50%, -50%)";
 
       trashHolder.appendChild(img);
 
-      img.onload = () => {
-        const holderRect = trashZone.getBoundingClientRect();
-        const imgWidth = img.offsetWidth;
-        const imgHeight = img.offsetHeight;
-
-        // Centrē uz trash-zone nevis uz visu ekrānu
-        startX = holderRect.width / 2 - imgWidth / 2;
-        startY = holderRect.height / 2 - imgHeight / 2;
-
-        img.style.left = `${startX}px`;
-        img.style.top = `${startY}px`;
-        img.style.transform = "none";
-        img.style.visibility = "visible";
-      };
+      // Saglabā sākuma pozīciju (centrēta)
+      startX = "50%";
+      startY = "50%";
 
       img.addEventListener("mousedown", startDrag);
       img.addEventListener("touchstart", startDrag, { passive: false });
@@ -130,11 +121,11 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
+    // Padara kustību ātru un precīzu
     draggedItem.style.transition = "none";
-    requestAnimationFrame(() => {
-      draggedItem.style.left = `${clientX - offsetX}px`;
-      draggedItem.style.top = `${clientY - offsetY}px`;
-    });
+    draggedItem.style.left = `${clientX - offsetX}px`;
+    draggedItem.style.top = `${clientY - offsetY}px`;
+    draggedItem.style.transform = "translate(0, 0)";
   }
 
   function endDrag() {
@@ -173,12 +164,15 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      draggedItem.style.transition = "all 0.2s ease";
-      draggedItem.style.left = `${startX}px`;
-      draggedItem.style.top = `${startY}px`;
+      // Ātri atgriež atpakaļ uz centrālo vietu
+      draggedItem.style.transition = "all 0.25s ease";
+      draggedItem.style.left = "50%";
+      draggedItem.style.top = "50%";
+      draggedItem.style.transform = "translate(-50%, -50%)";
       draggedItem = null;
     }
 
+    // Noņem eventus
     document.removeEventListener("mousemove", dragMove);
     document.removeEventListener("mouseup", endDrag);
     document.removeEventListener("touchmove", dragMove);
