@@ -1,9 +1,19 @@
+function playGame() {
+  window.location.href = "spele.html";
+}
+
+function showRules() {
+  window.location.href = "noteikumi.html";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const trashHolder = document.getElementById("trashHolder");
   const bins = document.querySelectorAll(".bin");
   const scoreDisplay = document.getElementById("score");
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
+
+  if (!trashHolder) return;
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -15,12 +25,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
+    { src: "partika2.png", type: "m1" },
+    { src: "partika3.png", type: "m1" },
     { src: "stikls1.png", type: "m2" },
+    { src: "stikls2.png", type: "m2" },
+    { src: "stikls3.png", type: "m2" },
     { src: "metals1.png", type: "m3" },
+    { src: "metals2.png", type: "m3" },
+    { src: "metals3.png", type: "m3" },
     { src: "plast1.png", type: "m4" },
+    { src: "plast2.png", type: "m4" },
+    { src: "plast3.png", type: "m4" },
     { src: "papirs1.png", type: "m5" },
-    { src: "bat1.png", type: "m6" }
+    { src: "papirs2.png", type: "m5" },
+    { src: "papirs3.png", type: "m5" },
+    { src: "bat1.png", type: "m6" },
+    { src: "bat2.png", type: "m6" },
+    { src: "bat3.png", type: "m6" }
   ];
+
+  const totalItems = trashItems.length;
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  shuffleArray(trashItems);
 
   function loadNextTrash() {
     trashHolder.innerHTML = "";
@@ -32,22 +65,20 @@ document.addEventListener("DOMContentLoaded", () => {
       img.className = "trash-item";
       img.setAttribute("data-type", trash.type);
       img.style.position = "absolute";
-      img.style.transition = "left 0.2s ease, top 0.2s ease";
-      img.style.visibility = "hidden"; // paslēpj kamēr ielādēts
+      img.style.visibility = "hidden";
 
       trashHolder.appendChild(img);
 
       img.onload = () => {
         const holderRect = trashHolder.getBoundingClientRect();
+        const imgRect = img.getBoundingClientRect();
 
-        const imgWidth = img.offsetWidth;
-        const imgHeight = img.offsetHeight;
-
-        startX = holderRect.width / 2 - imgWidth / 2;
-        startY = holderRect.height / 2 - imgHeight / 2;
+        startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
+        startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2;
 
         img.style.left = `${startX}px`;
         img.style.top = `${startY}px`;
+        img.style.transform = "none";
         img.style.visibility = "visible";
       };
 
@@ -56,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       trashHolder.innerHTML = `
         <h1>🎉 Visi atkritumi sašķiroti!</h1>
-        <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
+        <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${totalItems}</strong>.</p>
       `;
     }
   }
@@ -65,9 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
     draggedItem.style.zIndex = "1000";
+    draggedItem.style.transition = "none"; // no transition while dragging
+
     const rect = draggedItem.getBoundingClientRect();
 
-    if (e.type.startsWith("touch")) {
+    if (e.type === "touchstart") {
       const touch = e.touches[0];
       offsetX = touch.clientX - rect.left;
       offsetY = touch.clientY - rect.top;
@@ -94,13 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    const holderRect = trashHolder.getBoundingClientRect();
-
-    const x = clientX - holderRect.left - offsetX;
-    const y = clientY - holderRect.top - offsetY;
-
-    draggedItem.style.left = `${x}px`;
-    draggedItem.style.top = `${y}px`;
+    draggedItem.style.transition = "none"; // ensure instant movement
+    requestAnimationFrame(() => {
+      draggedItem.style.left = `${clientX - offsetX}px`;
+      draggedItem.style.top = `${clientY - offsetY}px`;
+    });
   }
 
   function endDrag() {
@@ -112,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bins.forEach((bin) => {
       const binRect = bin.getBoundingClientRect();
-      const binType = bin.getAttribute("data-type");
+      const binType = bin.getAttribute("src").replace(".png", "");
 
       const overlap = !(
         itemRect.right < binRect.left ||
@@ -128,18 +159,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (matched) {
       score++;
+      currentTrashIndex++;
       scoreDisplay.textContent = score;
-      const progress = (score / trashItems.length) * 100;
+
+      const progress = (score / totalItems) * 100;
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
-      currentTrashIndex++;
+
       draggedItem.remove();
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež uz centru
+      // Atgriež uz sākuma vietu ar ātru efektu
+      draggedItem.style.transition = "all 0.2s ease";
       draggedItem.style.left = `${startX}px`;
       draggedItem.style.top = `${startY}px`;
+      draggedItem = null;
     }
 
     document.removeEventListener("mousemove", dragMove);
