@@ -1,183 +1,159 @@
-function playGame() {
-  window.location.href = "spele.html";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-function showRules() {
-  window.location.href = "noteikumi.html";
+body {
+  background-color: white;
+  font-family: 'Century Gothic', sans-serif;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const trashHolder = document.getElementById("trashHolder");
-  const bins = document.querySelectorAll(".bin");
-  const scoreDisplay = document.getElementById("score");
-  const progressFill = document.getElementById("progressFill");
-  const progressIcon = document.getElementById("progressIcon");
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
 
-  if (!trashHolder) return;
+/* Miskastes rinda */
+.bins {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 5px;
+}
 
-  let currentTrashIndex = 0;
-  let score = 0;
-  let draggedItem = null;
-  let offsetX = 0;
-  let offsetY = 0;
-  let startX = 0;
-  let startY = 0;
+.bin {
+  width: 145px;
+  height: auto;
+}
 
-  const trashItems = [
-    { src: "partika1.png", type: "m1" },
-    { src: "partika2.png", type: "m1" },
-    { src: "partika3.png", type: "m1" },
-    { src: "stikls1.png", type: "m2" },
-    { src: "stikls2.png", type: "m2" },
-    { src: "stikls3.png", type: "m2" },
-    { src: "metals1.png", type: "m3" },
-    { src: "metals2.png", type: "m3" },
-    { src: "metals3.png", type: "m3" },
-    { src: "plast1.png", type: "m4" },
-    { src: "plast2.png", type: "m4" },
-    { src: "plast3.png", type: "m4" },
-    { src: "papirs1.png", type: "m5" },
-    { src: "papirs2.png", type: "m5" },
-    { src: "papirs3.png", type: "m5" },
-    { src: "bat1.png", type: "m6" },
-    { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" },
-  ];
+/* Atkritumu zona */
+.trash-zone {
+  width: 90%;
+  height: 200px;
+  background-color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 
-  const totalItems = trashItems.length;
+.trash-holder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
+/* Atkritumu attēli */
+.trash-item {
+  position: absolute;
+  width: 150px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  transition: all 0.2s ease-out;
+  z-index: 1000;
+}
+
+/* Progresijas josla */
+.progress-wrapper {
+  width: 90%;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background-color: #eee;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #4CAF50;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.progress-icon {
+  position: absolute;
+  top: -25px;
+  transform: translateX(-50%);
+  transition: left 0.4s ease;
+}
+
+.progress-icon img {
+  width: 40px;
+  height: 40px;
+}
+
+.progress-score {
+  margin-top: 10px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #1f6f3f;
+}
+
+/* Pogas */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background-color: #247339;
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  font-size: 28px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn:hover {
+  background-color: #1a5a2d;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .bins {
+    gap: 20px;
   }
 
-  shuffleArray(trashItems);
-
-  function loadNextTrash() {
-    trashHolder.innerHTML = "";
-
-    if (currentTrashIndex < trashItems.length) {
-      const trash = trashItems[currentTrashIndex];
-      const img = document.createElement("img");
-      img.src = trash.src;
-      img.className = "trash-item";
-      img.setAttribute("data-type", trash.type);
-
-      // Pozicionē centrā relatīvi pret trash-holder
-      img.style.left = "50%";
-      img.style.top = "50%";
-      img.style.transform = "translate(-50%, -50%)";
-
-      trashHolder.appendChild(img);
-
-      // Saglabā sākuma pozīciju (centrēta)
-      startX = "50%";
-      startY = "50%";
-
-      img.addEventListener("mousedown", startDrag);
-      img.addEventListener("touchstart", startDrag, { passive: false });
-    } else {
-      trashHolder.innerHTML = `
-        <h1>🎉 Visi atkritumi sašķiroti!</h1>
-        <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${totalItems}</strong>.</p>
-      `;
-    }
+  .bin {
+    width: 140px;
   }
 
-  function startDrag(e) {
-    e.preventDefault();
-    draggedItem = e.target;
-    draggedItem.style.zIndex = "1000";
-    draggedItem.style.transition = "none";
-
-    const rect = draggedItem.getBoundingClientRect();
-
-    if (e.type === "touchstart") {
-      const touch = e.touches[0];
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-      document.addEventListener("touchmove", dragMove, { passive: false });
-      document.addEventListener("touchend", endDrag);
-    } else {
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      document.addEventListener("mousemove", dragMove);
-      document.addEventListener("mouseup", endDrag);
-    }
+  .trash-item {
+    width: 130px;
   }
 
-  function dragMove(e) {
-    if (!draggedItem) return;
-    e.preventDefault();
-
-    let clientX, clientY;
-    if (e.type.startsWith("touch")) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
-
-    // Padara kustību ātru un precīzu
-    draggedItem.style.transition = "none";
-    draggedItem.style.left = `${clientX - offsetX}px`;
-    draggedItem.style.top = `${clientY - offsetY}px`;
-    draggedItem.style.transform = "translate(0, 0)";
+  .btn {
+    font-size: 22px;
+    padding: 12px 32px;
   }
 
-  function endDrag() {
-    if (!draggedItem) return;
-
-    const trashType = draggedItem.dataset.type;
-    const itemRect = draggedItem.getBoundingClientRect();
-    let matched = false;
-
-    bins.forEach((bin) => {
-      const binRect = bin.getBoundingClientRect();
-      const binType = bin.getAttribute("src").replace(".png", "");
-
-      const overlap = !(
-        itemRect.right < binRect.left ||
-        itemRect.left > binRect.right ||
-        itemRect.bottom < binRect.top ||
-        itemRect.top > binRect.bottom
-      );
-
-      if (overlap && trashType === binType) {
-        matched = true;
-      }
-    });
-
-    if (matched) {
-      score++;
-      currentTrashIndex++;
-      scoreDisplay.textContent = score;
-
-      const progress = (score / totalItems) * 100;
-      progressFill.style.width = `${progress}%`;
-      progressIcon.style.left = `${progress}%`;
-
-      draggedItem.remove();
-      draggedItem = null;
-      loadNextTrash();
-    } else {
-      // Ātri atgriež atpakaļ uz centrālo vietu
-      draggedItem.style.transition = "all 0.25s ease";
-      draggedItem.style.left = "50%";
-      draggedItem.style.top = "50%";
-      draggedItem.style.transform = "translate(-50%, -50%)";
-      draggedItem = null;
-    }
-
-    // Noņem eventus
-    document.removeEventListener("mousemove", dragMove);
-    document.removeEventListener("mouseup", endDrag);
-    document.removeEventListener("touchmove", dragMove);
-    document.removeEventListener("touchend", endDrag);
+  .progress-icon img {
+    width: 36px;
+    height: 36px;
   }
 
-  loadNextTrash();
-});
+  .progress-score {
+    font-size: 1.2rem;
+  }
+}
