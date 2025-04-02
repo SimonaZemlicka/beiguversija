@@ -8,6 +8,7 @@ function showRules() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const trashHolder = document.getElementById("trashHolder");
+  const trashZone = document.getElementById("trashZone");
   const bins = document.querySelectorAll(".bin");
   const scoreDisplay = document.getElementById("score");
   const progressFill = document.getElementById("progressFill");
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" }
+    { src: "bat3.png", type: "m6" },
   ];
 
   const totalItems = trashItems.length;
@@ -70,11 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
       trashHolder.appendChild(img);
 
       img.onload = () => {
-        const holderRect = trashHolder.getBoundingClientRect();
-        const imgRect = img.getBoundingClientRect();
+        const holderRect = trashZone.getBoundingClientRect();
+        const imgWidth = img.offsetWidth;
+        const imgHeight = img.offsetHeight;
 
-        startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
-        startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2;
+        // Centrē uz trash-zone nevis uz visu ekrānu
+        startX = holderRect.width / 2 - imgWidth / 2;
+        startY = holderRect.height / 2 - imgHeight / 2;
 
         img.style.left = `${startX}px`;
         img.style.top = `${startY}px`;
@@ -96,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
     draggedItem.style.zIndex = "1000";
-    draggedItem.style.transition = "none"; // no transition while dragging
+    draggedItem.style.transition = "none";
 
     const rect = draggedItem.getBoundingClientRect();
 
@@ -127,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedItem.style.transition = "none"; // ensure instant movement
+    draggedItem.style.transition = "none";
     requestAnimationFrame(() => {
       draggedItem.style.left = `${clientX - offsetX}px`;
       draggedItem.style.top = `${clientY - offsetY}px`;
@@ -170,7 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež uz sākuma vietu ar ātru efektu
       draggedItem.style.transition = "all 0.2s ease";
       draggedItem.style.left = `${startX}px`;
       draggedItem.style.top = `${startY}px`;
