@@ -116,8 +116,8 @@ body {
 }
 
 .btn {
-  background-color:#247339;
-  color: white;
+  background-color: #247339;     /* zaļš fons */
+  color: white;                  /* balts teksts */
   border: none;
   padding: 14px 40px;
   font-size: 28px;
@@ -128,8 +128,9 @@ body {
 }
 
 .btn:hover {
-  background-color: #e0e0e0;
+  background-color: #1a5a2d;     /* tumšāks zaļš uz hover */
 }
+
 
 /* Shake (ja vēl vajag) */
 @keyframes shakeAnim {
