@@ -8,7 +8,6 @@ function showRules() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const trashHolder = document.getElementById("trashHolder");
-  const trashZone = document.getElementById("trashZone");
   const bins = document.querySelectorAll(".bin");
   const scoreDisplay = document.getElementById("score");
   const progressFill = document.getElementById("progressFill");
@@ -66,18 +65,20 @@ document.addEventListener("DOMContentLoaded", () => {
       img.className = "trash-item";
       img.setAttribute("data-type", trash.type);
       img.style.position = "absolute";
-      img.style.visibility = "hidden";
+      img.style.visibility = "hidden"; // slēpj uz brīdi
 
       trashHolder.appendChild(img);
 
+      // Kad attēls ielādēts, tad ieliek centrā
       img.onload = () => {
-        const holderRect = trashZone.getBoundingClientRect();
+        const holderWidth = trashHolder.offsetWidth;
+        const holderHeight = trashHolder.offsetHeight;
+
         const imgWidth = img.offsetWidth;
         const imgHeight = img.offsetHeight;
 
-        // Centrē uz trash-zone nevis uz visu ekrānu
-        startX = holderRect.width / 2 - imgWidth / 2;
-        startY = holderRect.height / 2 - imgHeight / 2;
+        startX = holderWidth / 2 - imgWidth / 2;
+        startY = holderHeight / 2 - imgHeight / 2;
 
         img.style.left = `${startX}px`;
         img.style.top = `${startY}px`;
@@ -99,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
     draggedItem.style.zIndex = "1000";
-    draggedItem.style.transition = "none";
 
     const rect = draggedItem.getBoundingClientRect();
 
@@ -130,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedItem.style.transition = "none";
     requestAnimationFrame(() => {
       draggedItem.style.left = `${clientX - offsetX}px`;
       draggedItem.style.top = `${clientY - offsetY}px`;
@@ -173,12 +172,14 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      draggedItem.style.transition = "all 0.2s ease";
+      // Atgriež uz sākuma vietu
+      draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = `${startX}px`;
       draggedItem.style.top = `${startY}px`;
       draggedItem = null;
     }
 
+    // Noņem notikumus
     document.removeEventListener("mousemove", dragMove);
     document.removeEventListener("mouseup", endDrag);
     document.removeEventListener("touchmove", dragMove);
